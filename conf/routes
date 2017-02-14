@@ -9,3 +9,5 @@ GET     /                           controllers.HomeExampleController.index
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 GET     /api-docs                   controllers.ApiHelpController.getResources
+
+GET     /users/:id/quizzes          controllers.QuizController.getQuizzes(id: Int)

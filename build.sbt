@@ -1,14 +1,22 @@
-name := "NxT_api_proxy"
+name := """NxT_api_proxy"""
 
 version := "1.0"
 
-lazy val `test1234` = (project in file(".")).enablePlugins(PlayJava)
+lazy val NxT_api_proxy = (project in file(".")).enablePlugins(PlayJava)
 
 scalaVersion := "2.11.7"
 
 routesGenerator := InjectedRoutesGenerator
 
-libraryDependencies ++= Seq( javaJdbc , cache , javaWs,
+logLevel in Test := Level.Debug
+
+libraryDependencies += javaJdbc
+
+libraryDependencies += cache
+
+libraryDependencies += javaWs
+
+libraryDependencies ++= Seq(
   "io.swagger" %% "swagger-play2" % "1.5.1" exclude("org.reflections", "reflections"),
   "org.reflections" % "reflections" % "0.9.8" notTransitive (),
   "org.webjars" % "swagger-ui" % "2.1.8-M1",
@@ -18,3 +26,7 @@ libraryDependencies ++= Seq( javaJdbc , cache , javaWs,
   "org.assertj" % "assertj-core" % "3.6.2" % "test",
   "com.novocode" % "junit-interface" % "0.11" % "test"
 )
+
+testOptions in Test := Seq(Tests.Filter(s => s.endsWith("Test")))
+
+testOptions in Test += Tests.Argument(TestFrameworks.JUnit, "-a")
