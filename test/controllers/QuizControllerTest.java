@@ -3,6 +3,7 @@ package controllers;
 import com.google.inject.Guice;
 import com.google.inject.testing.fieldbinder.Bind;
 import com.google.inject.testing.fieldbinder.BoundFieldModule;
+import models.Quiz;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -11,8 +12,11 @@ import play.mvc.Result;
 import play.test.WithApplication;
 import services.QuizService;
 
+import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static play.test.Helpers.*;
 
 
@@ -32,6 +36,9 @@ public class QuizControllerTest extends WithApplication{
 
     @Test
     public void getQuizzesReturnsQuizList() throws Exception {
+        int anyId = 21;
+        when(mockQuizService.selectQuizList(anyId)).thenReturn(Arrays.asList(new Quiz()));
+
         Result result = route(fakeRequest(GET, "/users/21/quizzes"));
 
         assertThat(contentAsString(result)).contains("quizzes");
