@@ -1,13 +1,25 @@
 package services;
 
-import models.Quiz;
+import apis.QuizLegacyConnector;
+import com.google.inject.Inject;
+import models.legacy.LegacyQuiz;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class QuizService {
-    public List<Quiz> selectQuizList(int userId) {
 
-        return new ArrayList<>();
+    private QuizLegacyConnector quizLegacyConnector;
+
+    @Inject
+    public QuizService(QuizLegacyConnector quizLegacyConnector) {
+        this.quizLegacyConnector = quizLegacyConnector;
     }
+
+    public List<LegacyQuiz> getQuizzes(Map<String, Object> params) {
+        List<LegacyQuiz> legacyQuizzes = quizLegacyConnector.selectQuizList(params);
+        //transform
+        return legacyQuizzes;
+    }
+
 }

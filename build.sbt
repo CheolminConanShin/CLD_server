@@ -21,6 +21,8 @@ libraryDependencies ++= Seq(
   "org.reflections" % "reflections" % "0.9.8" notTransitive (),
   "org.webjars" % "swagger-ui" % "2.1.8-M1",
   "com.google.code.gson" % "gson" % "2.8.0",
+  "org.projectlombok" % "lombok" % "1.16.14",
+  "junit" % "junit" % "4.12" % "test",
   "com.google.inject.extensions" % "guice-testlib" % "4.0" % "test",
   "org.mockito" % "mockito-core" % "2.7.5" % "test",
   "org.assertj" % "assertj-core" % "3.6.2" % "test",

@@ -1,61 +1,73 @@
 package controllers;
 
-import com.google.inject.Guice;
-import com.google.inject.testing.fieldbinder.Bind;
-import com.google.inject.testing.fieldbinder.BoundFieldModule;
-import models.Quiz;
+import com.google.common.collect.Maps;
+import models.legacy.LegacyQuiz;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import play.Application;
+import play.inject.guice.GuiceApplicationBuilder;
 import play.mvc.Result;
 import play.test.WithApplication;
 import services.QuizService;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static play.inject.Bindings.bind;
 import static play.test.Helpers.*;
 
 
-public class QuizControllerTest extends WithApplication{
+public class QuizControllerTest extends WithApplication {
 
     private QuizController subject;
 
-    @Bind @Mock
+    @Mock
     private QuizService mockQuizService;
+
+    @Override
+    protected Application provideApplication() {
+        MockitoAnnotations.initMocks(this);
+        Application application = new GuiceApplicationBuilder()
+                .overrides(bind(QuizService.class).toInstance(mockQuizService))
+                .build();
+
+        return application;
+    }
 
     @Before
     public void setUp() throws Exception {
         subject = app.injector().instanceOf(QuizController.class);
-        MockitoAnnotations.initMocks(this);
-        Guice.createInjector(BoundFieldModule.of(this)).injectMembers(subject);
+
     }
 
     @Test
-    public void getQuizzesReturnsQuizList() throws Exception {
-        int anyId = 21;
-        when(mockQuizService.selectQuizList(anyId)).thenReturn(Arrays.asList(new Quiz()));
+    public void getQuizzesWithUserId_callsServiceWithUserId() throws Exception {
+        route(fakeRequest(GET, "/users/21/quizzes?searchStartDate=2017-01-15&searchEndDate=2017-02-15"));
 
-        Result result = route(fakeRequest(GET, "/users/21/quizzes"));
+        Map<String, Object> expectParams = Maps.newHashMap();
+        expectParams.put("userId", 21);
+        expectParams.put("searchStartDate", "2017-01-15");
+        expectParams.put("searchEndDate", "2017-02-15");
 
-        assertThat(contentAsString(result)).contains("quizzes");
-        assertThat(contentAsString(result)).contains("quizID");
-        assertThat(contentAsString(result)).contains("submitted");
-        assertThat(contentAsString(result)).contains("lastAttemptedDate");
-        assertThat(contentAsString(result)).contains("sessionNumber");
-        assertThat(contentAsString(result)).contains("periodStart");
-        assertThat(contentAsString(result)).contains("periodEnd");
+        verify(mockQuizService).getQuizzes(expectParams);
     }
 
     @Test
-    public void getQuizzesWithUserId_CallsServiceWithUserId() throws Exception {
-        route(fakeRequest(GET, "/users/21/quizzes"));
+    public void getQuizzesReturnsLegacyQuizList() throws Exception {
+        when(mockQuizService.getQuizzes(anyMap())).thenReturn(Arrays.asList(new LegacyQuiz()));
 
-        verify(mockQuizService).selectQuizList(21);
+        Result result = route(fakeRequest(GET, "/users/21/quizzes?searchStartDate=2017-01-15&searchEndDate=2017-02-15"));
+
+        String actual = contentAsString(result);
+
+        assertThat(actual).contains("data");
+        assertThat(actual).contains("totalCnt");
+        assertThat(actual).contains("quizOrderList");
     }
-
-
 }
