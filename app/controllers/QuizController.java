@@ -6,12 +6,14 @@ import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import models.legacy.LegacyQuiz;
+import models.Quiz;
+import models.legacy.NexshopTrainingResponseObject;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.QuizService;
 
 import javax.inject.Singleton;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +30,7 @@ public class QuizController extends Controller{
     }
 
     @ApiOperation("get quiz list with user Id")
-    public Result getQuizzes(int userId, String searchStartDate, String searchEndDate){
+    public Result getQuizzes(int userId, String searchStartDate, String searchEndDate) throws ParseException {
         Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
 
         Map<String, Object> params = Maps.newHashMap();
@@ -36,15 +38,15 @@ public class QuizController extends Controller{
         params.put("searchStartDate", searchStartDate);
         params.put("searchEndDate", searchEndDate);
 
-        List<LegacyQuiz> quizzes = quizService.getQuizzes(params);
+        List<Quiz> quizzes = quizService.getQuizzes(params);
 
+        return ok(gson.toJson(arrayResponse("quizzes", quizzes)));
+    }
+
+    private NexshopTrainingResponseObject<Map<String, Object>> arrayResponse(String key, List<?> objectArray) {
         Map<String, Object> listMap = new HashMap<>();
-        listMap.put("quizOrderList", quizzes);
-        listMap.put("totalCnt", quizzes.size());
+        listMap.put(key, objectArray);
 
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("data", listMap);
-
-        return ok(gson.toJson(resultMap));
+        return new NexshopTrainingResponseObject<>(listMap);
     }
 }

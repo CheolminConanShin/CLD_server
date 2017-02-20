@@ -51,7 +51,7 @@ public class QuizLegacyConnectorTest {
         when(mockClient.url(anyString())).thenReturn(mockRequest);
         when(mockRequest.post(any(JsonNode.class))).thenReturn(responsePromise);
         when(responsePromise.map(any())).thenReturn(mockPromise);
-        when(mockPromise.get(anyLong())).thenReturn(Arrays.asList(new LegacyQuiz()));
+        when(mockPromise.get(anyLong())).thenReturn(Arrays.asList(mock(LegacyQuiz.class)));
 
         List<LegacyQuiz> legacyQuizzes = subject.selectQuizList(Maps.newHashMap());
 

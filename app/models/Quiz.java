@@ -1,14 +1,18 @@
 package models;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
+import java.util.Date;
+
+@Getter @Setter @AllArgsConstructor @EqualsAndHashCode
 public class Quiz {
-    String quizID;
-    boolean submitted;
-    String lastAttemptedDate;
-    String sessionNumber;
-    String periodStart;
-    String periodEnd;
+    int id;
+    String name;
+    int order;
+    int numQuestions;
+    String userStatus;
+    Date expiration;
 }

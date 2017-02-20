@@ -1,20 +1,23 @@
 package controllers;
 
 import com.google.common.collect.Maps;
-import models.legacy.LegacyQuiz;
+import models.Quiz;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import play.Application;
 import play.inject.guice.GuiceApplicationBuilder;
 import play.mvc.Result;
 import play.test.WithApplication;
 import services.QuizService;
 
-import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.verify;
@@ -23,27 +26,17 @@ import static play.inject.Bindings.bind;
 import static play.test.Helpers.*;
 
 
+@RunWith(MockitoJUnitRunner.class)
 public class QuizControllerTest extends WithApplication {
-
-    private QuizController subject;
 
     @Mock
     private QuizService mockQuizService;
 
     @Override
     protected Application provideApplication() {
-        MockitoAnnotations.initMocks(this);
-        Application application = new GuiceApplicationBuilder()
+        return new GuiceApplicationBuilder()
                 .overrides(bind(QuizService.class).toInstance(mockQuizService))
                 .build();
-
-        return application;
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        subject = app.injector().instanceOf(QuizController.class);
-
     }
 
     @Test
@@ -60,14 +53,14 @@ public class QuizControllerTest extends WithApplication {
 
     @Test
     public void getQuizzesReturnsLegacyQuizList() throws Exception {
-        when(mockQuizService.getQuizzes(anyMap())).thenReturn(Arrays.asList(new LegacyQuiz()));
+        Quiz quiz = new Quiz(1, "taco", 1, 1, "taco", new Date());
+        when(mockQuizService.getQuizzes(anyMap())).thenReturn(asList(quiz));
 
         Result result = route(fakeRequest(GET, "/users/21/quizzes?searchStartDate=2017-01-15&searchEndDate=2017-02-15"));
 
         String actual = contentAsString(result);
 
         assertThat(actual).contains("data");
-        assertThat(actual).contains("totalCnt");
-        assertThat(actual).contains("quizOrderList");
+        assertThat(actual).contains("quizzes");
     }
 }

@@ -2,27 +2,33 @@ package services;
 
 import apis.QuizLegacyConnector;
 import com.google.common.collect.Maps;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
+import services.transformers.QuizTransformer;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class QuizServiceTest {
-
-    private QuizService subject;
 
     @Mock
     private QuizLegacyConnector mockQuizLegacyConnector;
 
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        subject = new QuizService(mockQuizLegacyConnector);
-    }
+    @Mock
+    private QuizTransformer quizTransformer;
+
+    @InjectMocks
+    private QuizService subject;
 
     @Test
     public void getQuizzes_apiCalls() throws Exception {
@@ -31,5 +37,16 @@ public class QuizServiceTest {
         subject.getQuizzes(params);
 
         verify(mockQuizLegacyConnector).selectQuizList(params);
+    }
+
+    @Test
+    public void shouldTransformApiResponseObject() throws ParseException {
+        Map params = mock(Map.class);
+        List legacyQuizzes = new ArrayList();
+        when(mockQuizLegacyConnector.selectQuizList(params)).thenReturn(legacyQuizzes);
+
+        subject.getQuizzes(params);
+
+        verify(quizTransformer).transform(legacyQuizzes);
     }
 }
