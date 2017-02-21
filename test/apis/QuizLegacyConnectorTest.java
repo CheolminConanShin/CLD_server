@@ -2,14 +2,13 @@ package apis;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Maps;
-import com.google.inject.Guice;
-import com.google.inject.testing.fieldbinder.Bind;
-import com.google.inject.testing.fieldbinder.BoundFieldModule;
 import models.legacy.LegacyQuiz;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import play.libs.F;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
@@ -23,23 +22,20 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class QuizLegacyConnectorTest {
-    private QuizLegacyConnector subject;
 
-    @Mock @Bind
+    @Mock
     private WSClient mockClient;
+    @InjectMocks
+    private QuizLegacyConnector subject;
 
     @Before
     public void setUp() throws Exception {
-        subject = new QuizLegacyConnector();
-
-        MockitoAnnotations.initMocks(this);
-        Guice.createInjector(BoundFieldModule.of(this)).injectMembers(subject);
-
         Http.Context context = mock(Http.Context.class);
-        Http.Request request = mock(Http.Request.class);
+        when(context.request()).thenReturn(mock(Http.Request.class));
+
         Http.Context.current.set(context);
-        when(context.request()).thenReturn(request);
     }
 
     @Test
