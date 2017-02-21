@@ -1,8 +1,6 @@
 package controllers;
 
-import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static play.libs.Json.toJson;
+
 @Api
 @Singleton
 public class QuizController extends Controller{
@@ -31,16 +31,14 @@ public class QuizController extends Controller{
 
     @ApiOperation("get quiz list with user Id")
     public Result getQuizzes(int userId, String searchStartDate, String searchEndDate) throws ParseException {
-        Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
 
-        Map<String, Object> params = Maps.newHashMap();
-        params.put("userId", userId);
-        params.put("searchStartDate", searchStartDate);
-        params.put("searchEndDate", searchEndDate);
+        Map<String, Object> params = ImmutableMap.of("userId", userId,
+                                                     "searchStartDate", searchStartDate,
+                                                     "searchEndDate", searchEndDate);
 
         List<Quiz> quizzes = quizService.getQuizzes(params);
 
-        return ok(gson.toJson(arrayResponse("quizzes", quizzes)));
+        return ok(toJson(arrayResponse("quizzes", quizzes)));
     }
 
     private NexshopTrainingResponseObject<Map<String, Object>> arrayResponse(String key, List<?> objectArray) {
