@@ -29,11 +29,10 @@ public class QuizController extends Controller{
         this.quizService = quizService;
     }
 
-    @ApiOperation("get quiz list with user Id")
-    public Result getQuizzes(int userId, String searchStartDate, String searchEndDate) throws ParseException {
+    @ApiOperation("get quiz list with date boundaries")
+    public Result getQuizzes(String searchStartDate, String searchEndDate) throws ParseException {
 
-        Map<String, Object> params = ImmutableMap.of("userId", userId,
-                                                     "searchStartDate", searchStartDate,
+        Map<String, Object> params = ImmutableMap.of("searchStartDate", searchStartDate,
                                                      "searchEndDate", searchEndDate);
 
         List<Quiz> quizzes = quizService.getQuizzes(params);

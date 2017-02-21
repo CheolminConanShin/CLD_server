@@ -10,4 +10,4 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 GET     /api-docs                   controllers.ApiHelpController.getResources
 
-GET     /users/:userId/quizzes      controllers.QuizController.getQuizzes(userId: Int, searchStartDate: String, searchEndDate: String)
+GET     /users/quizzes      controllers.QuizController.getQuizzes(searchStartDate: String, searchEndDate: String)

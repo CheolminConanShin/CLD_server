@@ -40,11 +40,10 @@ public class QuizControllerTest extends WithApplication {
     }
 
     @Test
-    public void getQuizzesWithUserId_callsServiceWithUserId() throws Exception {
-        route(fakeRequest(GET, "/users/21/quizzes?searchStartDate=2017-01-15&searchEndDate=2017-02-15"));
+    public void getQuizzesWithQueryParameters_callsServiceWithSameParameters() throws Exception {
+        route(fakeRequest(GET, "/users/quizzes?searchStartDate=2017-01-15&searchEndDate=2017-02-15"));
 
         Map<String, Object> expectParams = Maps.newHashMap();
-        expectParams.put("userId", 21);
         expectParams.put("searchStartDate", "2017-01-15");
         expectParams.put("searchEndDate", "2017-02-15");
 
@@ -56,7 +55,7 @@ public class QuizControllerTest extends WithApplication {
         Quiz quiz = new Quiz(1, "taco", 1, 1, "taco", new Date());
         when(mockQuizService.getQuizzes(anyMap())).thenReturn(asList(quiz));
 
-        Result result = route(fakeRequest(GET, "/users/21/quizzes?searchStartDate=2017-01-15&searchEndDate=2017-02-15"));
+        Result result = route(fakeRequest(GET, "/users/quizzes?searchStartDate=2017-01-15&searchEndDate=2017-02-15"));
 
         String actual = contentAsString(result);
 
