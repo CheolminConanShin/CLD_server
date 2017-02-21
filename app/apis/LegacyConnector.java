@@ -12,10 +12,10 @@ public class LegacyConnector {
 
 
     public WSRequest makeRequest(String url){
-        String baseUrl = "http://localhost:8080/frt";
+        Http.Request httpRequest = Http.Context.current().request();
+        String baseUrl = httpRequest.getHeader("Edt-Server-Domain");
         WSRequest request = ws.url(baseUrl + url);
 
-        Http.Request httpRequest = Http.Context.current().request();
 
         request.setHeader("Cookie", httpRequest.getHeader("Cookie"));
         request.setHeader("Edt-Id-Token", httpRequest.getHeader("Edt-Id-Token"));
