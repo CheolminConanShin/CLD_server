@@ -1,12 +1,14 @@
 package apis;
 
 import com.google.inject.Inject;
+import lombok.Setter;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
 import play.mvc.Http;
 
 public class LegacyConnector {
 
+    @Setter //used by contract tests
     @Inject
     private WSClient ws;
 
