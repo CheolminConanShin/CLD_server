@@ -4,3 +4,5 @@ then
 else
    echo "No Process Running"
 fi
+
+exit 0
