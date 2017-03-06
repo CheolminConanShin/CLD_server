@@ -1,3 +1,4 @@
+
 name := """NxT_api_proxy"""
 
 version := "1.0"
@@ -26,9 +27,24 @@ libraryDependencies ++= Seq(
   "com.google.inject.extensions" % "guice-testlib" % "4.0" % "test",
   "org.mockito" % "mockito-core" % "2.7.5" % "test",
   "org.assertj" % "assertj-core" % "3.6.2" % "test",
-  "com.novocode" % "junit-interface" % "0.11" % "test"
+  "com.novocode" % "junit-interface" % "0.11" % "test",
+  "org.mbtest.javabank" % "javabank-client" % "0.4.7" % "test"
 )
 
 testOptions in Test := Seq(Tests.Filter(s => s.endsWith("Test")))
 
 testOptions in Test += Tests.Argument(TestFrameworks.JUnit, "-a")
+
+lazy val stopMounteBank = taskKey[Unit] ("Stop MounteBank")
+lazy val startMounteBank = taskKey[Unit] ("Start MounteBank")
+
+stopMounteBank := {
+  var pid = "cat ./mb.pid".!!
+  s"kill -9 $pid".run()
+}
+
+startMounteBank := {
+  "mb --loglevel info".run()
+}
+
+(test in Test) <<= (test in Test).dependsOn(stopMounteBank, startMounteBank)
