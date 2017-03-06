@@ -39,8 +39,7 @@ lazy val stopMounteBank = taskKey[Unit] ("Stop MounteBank")
 lazy val startMounteBank = taskKey[Unit] ("Start MounteBank")
 
 stopMounteBank := {
-  var pid = "cat ./mb.pid".!!
-  s"kill -9 $pid".run()
+  "sh process-kill.sh".run()
 }
 
 startMounteBank := {
