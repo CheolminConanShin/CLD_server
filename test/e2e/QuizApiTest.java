@@ -3,15 +3,15 @@ package e2e;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.net.HttpHeaders;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import models.legacy.LegacyQuiz;
-import models.legacy.NexshopTrainingResponseObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mbtest.javabank.Client;
 import org.mbtest.javabank.fluent.ImposterBuilder;
 import org.mbtest.javabank.http.imposters.Imposter;
-
 import play.core.j.JavaResultExtractor;
 import play.libs.Json;
 import play.mvc.Http;
@@ -23,9 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static play.test.Helpers.GET;
-import static play.test.Helpers.fakeRequest;
-import static play.test.Helpers.route;
+import static play.libs.Json.newObject;
+import static play.libs.Json.toJson;
+import static play.test.Helpers.*;
 
 public class QuizApiTest extends WithApplication {
 
@@ -49,9 +49,8 @@ public class QuizApiTest extends WithApplication {
         String bodyStr = new String(body, "utf-8");
         JsonNode bodyJson = Json.parse(bodyStr);
 
-        assertThat(bodyJson.get("data")).isNotNull();
-        assertThat(bodyJson.get("data").get("quizzes")).isNotNull();
-        assertThat(bodyJson.get("data").get("quizzes").size()).isEqualTo(10);
+        assertThat(bodyJson.get("quizzes")).isNotNull();
+        assertThat(bodyJson.get("quizzes").size()).isEqualTo(10);
     }
 
     @After
@@ -61,15 +60,15 @@ public class QuizApiTest extends WithApplication {
 
     public void stubAPIResponseForNumberOfQuizzes(int numberOfQuizzes) throws IOException {
         List<LegacyQuiz> quizList = createQuizList(numberOfQuizzes);
-        JsonNode data = Json.newObject().set("quizOrderList", Json.toJson(quizList));
-        NexshopTrainingResponseObject<JsonNode> responseObject = new NexshopTrainingResponseObject<>(data);
+        JsonNode legacyQuizzes = newObject().set("quizOrderList", toJson(quizList));
+        JsonNode responseWrapper = newObject().set("data", legacyQuizzes);
 
         Imposter imposter = ImposterBuilder.anImposter()
                 .onPort(3000)
                 .stub()
                 .response()
                 .is()
-                .body(new ObjectMapper().writeValueAsString(responseObject))
+                .body(new ObjectMapper().writeValueAsString(responseWrapper))
                 .statusCode(200)
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .end()

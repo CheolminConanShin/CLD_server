@@ -1,13 +1,13 @@
 package models;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import io.swagger.annotations.ApiModel;
+import lombok.*;
 
 import java.util.Date;
 
-@Getter @Setter @AllArgsConstructor @EqualsAndHashCode
+@ApiModel
+@Getter @AllArgsConstructor @EqualsAndHashCode
+@NoArgsConstructor //for QuizControllerTest
 public class Quiz {
     int id;
     String name;

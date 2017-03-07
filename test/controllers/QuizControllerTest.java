@@ -1,12 +1,12 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import models.Quiz;
-import org.junit.Before;
+import models.QuizList;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import play.Application;
 import play.inject.guice.GuiceApplicationBuilder;
@@ -57,9 +57,9 @@ public class QuizControllerTest extends WithApplication {
 
         Result result = route(fakeRequest(GET, "/users/quizzes?searchStartDate=2017-01-15&searchEndDate=2017-02-15"));
 
-        String actual = contentAsString(result);
+        QuizList quizList = new ObjectMapper().readValue(contentAsString(result), QuizList.class);
 
-        assertThat(actual).contains("data");
-        assertThat(actual).contains("quizzes");
+        assertThat(quizList.getQuizzes().size()).isEqualTo(1);
+        assertThat(quizList.getQuizzes().get(0).getName()).isEqualTo("taco");
     }
 }

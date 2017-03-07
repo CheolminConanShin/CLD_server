@@ -4,15 +4,15 @@ import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import models.Quiz;
-import models.legacy.NexshopTrainingResponseObject;
+import models.QuizList;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.QuizService;
 
 import javax.inject.Singleton;
 import java.text.ParseException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,21 +29,15 @@ public class QuizController extends Controller{
         this.quizService = quizService;
     }
 
-    @ApiOperation("get quiz list with date boundaries")
-    public Result getQuizzes(String searchStartDate, String searchEndDate) throws ParseException {
+    @ApiOperation(value = "get quiz list with date boundaries",
+    response = QuizList.class)
+    public Result getQuizzes(@ApiParam(required = true) String searchStartDate, @ApiParam(required = true) String searchEndDate) throws ParseException {
 
         Map<String, Object> params = ImmutableMap.of("searchStartDate", searchStartDate,
                                                      "searchEndDate", searchEndDate);
 
         List<Quiz> quizzes = quizService.getQuizzes(params);
 
-        return ok(toJson(arrayResponse("quizzes", quizzes)));
-    }
-
-    private NexshopTrainingResponseObject<Map<String, Object>> arrayResponse(String key, List<?> objectArray) {
-        Map<String, Object> listMap = new HashMap<>();
-        listMap.put(key, objectArray);
-
-        return new NexshopTrainingResponseObject<>(listMap);
+        return ok(toJson(new QuizList(quizzes)));
     }
 }
