@@ -4,6 +4,20 @@ name := """NxT_api_proxy"""
 version := "1.0"
 
 lazy val NxT_api_proxy = (project in file(".")).enablePlugins(PlayJava)
+  .configs( ContractTest, UnitTest )
+  .settings( inConfig(ContractTest)(Defaults.testTasks) : _* )
+  .settings( inConfig(UnitTest)(Defaults.testTasks) : _* )
+  .settings(
+    testOptions in Test += Tests.Argument(TestFrameworks.JUnit, "-a"),
+    testOptions in ContractTest := Seq(Tests.Filter(contractFilter)),
+    testOptions in UnitTest := Seq(Tests.Filter(unitFilter))
+  )
+
+def contractFilter(name: String): Boolean = name endsWith "ContractTest"
+def unitFilter(name: String): Boolean = (name endsWith "Test") && !contractFilter(name)
+
+lazy val ContractTest = config("contract") extend(Test)
+lazy val UnitTest = config("unit") extend(Test)
 
 scalaVersion := "2.11.7"
 
@@ -29,9 +43,6 @@ libraryDependencies ++= Seq(
   "org.mbtest.javabank" % "javabank-client" % "0.4.7" % "test"
 )
 
-testOptions in Test := Seq(Tests.Filter(s => s.endsWith("Test")))
-
-testOptions in Test += Tests.Argument(TestFrameworks.JUnit, "-a")
 
 lazy val stopMounteBank = taskKey[Unit] ("Stop MounteBank")
 lazy val startMounteBank = taskKey[Unit] ("Start MounteBank")
@@ -43,5 +54,7 @@ stopMounteBank := {
 startMounteBank := {
   "mb --loglevel info".run()
 }
+
+(test in UnitTest) <<= (test in UnitTest).dependsOn(stopMounteBank, startMounteBank)
 
 (test in Test) <<= (test in Test).dependsOn(stopMounteBank, startMounteBank)

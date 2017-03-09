@@ -28,7 +28,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static play.inject.Bindings.bind;
 
-public class QuizLegacyConnectorContractTest extends WithApplication {
+public class QuizLegacyConnectorContractTest extends WithApplication{
 
     private static final String DEVICE_TYPE_HEADER = "Phone";
     private static final String OS_TYPE_HEADER = "Android";
