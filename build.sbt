@@ -20,7 +20,6 @@ libraryDependencies += javaWs
 libraryDependencies ++= Seq(
   "io.swagger" %% "swagger-play2" % "1.5.1" exclude("org.reflections", "reflections"),
   "org.reflections" % "reflections" % "0.9.8" notTransitive (),
-  "org.webjars" % "swagger-ui" % "2.1.8-M1",
   "com.google.code.gson" % "gson" % "2.8.0",
   "org.projectlombok" % "lombok" % "1.16.14",
   "junit" % "junit" % "4.12" % "test",
