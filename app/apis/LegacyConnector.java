@@ -12,14 +12,12 @@ public class LegacyConnector {
     @Inject
     private WSClient ws;
 
-
     public WSRequest makeRequest(String url){
         Http.Request httpRequest = Http.Context.current().request();
         String baseUrl = httpRequest.getHeader("Edt-Server-Domain");
         WSRequest request = ws.url(baseUrl + url);
 
-
-        request.setHeader("Cookie", httpRequest.getHeader("Cookie"));
+        request.setHeader("Cookie", httpRequest.getHeader("Edt-Cookie"));
         request.setHeader("Edt-Id-Token", httpRequest.getHeader("Edt-Id-Token"));
         request.setHeader("Edt-Device-Type", httpRequest.getHeader("Edt-Device-Type"));
         request.setHeader("Edt-Os-Type", httpRequest.getHeader("Edt-Os-Type"));

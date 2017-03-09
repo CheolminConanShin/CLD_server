@@ -61,7 +61,7 @@ public class LegacyConnectorTest {
 
     private void addHeaders(Request incomingRequest) {
         when(incomingRequest.getHeader("Edt-Server-Domain")).thenReturn(SERVER_DOMAIN);
-        when(incomingRequest.getHeader("Cookie")).thenReturn(COOKIE_HEADER);
+        when(incomingRequest.getHeader("Edt-Cookie")).thenReturn(COOKIE_HEADER);
         when(incomingRequest.getHeader("Edt-Id-Token")).thenReturn(TOKEN_HEADER);
         when(incomingRequest.getHeader("Edt-Device-Type")).thenReturn(DEVICE_TYPE_HEADER);
         when(incomingRequest.getHeader("Edt-Os-Type")).thenReturn(OS_TYPE_HEADER);
