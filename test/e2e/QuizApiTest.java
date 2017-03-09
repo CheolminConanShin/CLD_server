@@ -3,8 +3,6 @@ package e2e;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.net.HttpHeaders;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import models.legacy.LegacyQuiz;
 import org.junit.After;
 import org.junit.Before;
@@ -23,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static play.libs.Json.newObject;
 import static play.libs.Json.toJson;
 import static play.test.Helpers.*;
@@ -41,7 +40,7 @@ public class QuizApiTest extends WithApplication {
         stubAPIResponseForNumberOfQuizzes(10);
 
         Http.RequestBuilder requestBuilder = fakeRequest(GET, "/users/quizzes?searchStartDate=2017-01-15&searchEndDate=2017-02-15");
-        requestBuilder.header("Edt-Server-Domain","http://localhost:3000");
+        requestBuilder.header("Edt-Server-Domain", "http://localhost:3000");
         Result result = route(requestBuilder);
 
         assertThat(result.status()).isEqualTo(200);
@@ -75,7 +74,10 @@ public class QuizApiTest extends WithApplication {
                 .end()
                 .end()
                 .build();
-        client.createImposter(imposter);
+        int statusCode = client.createImposter(imposter);
+        if (statusCode != 201) {
+            fail("Failed to create imposter. Status code returned " + statusCode + ".");
+        }
     }
 
     private List<LegacyQuiz> createQuizList(int numberOfQuizzes) {

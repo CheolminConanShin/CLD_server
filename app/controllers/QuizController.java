@@ -18,9 +18,9 @@ import java.util.Map;
 
 import static play.libs.Json.toJson;
 
-@Api
+@Api("Quiz API")
 @Singleton
-public class QuizController extends Controller{
+public class QuizController extends Controller {
 
     private QuizService quizService;
 
@@ -30,11 +30,11 @@ public class QuizController extends Controller{
     }
 
     @ApiOperation(value = "get quiz list with date boundaries",
-    response = QuizList.class)
-    public Result getQuizzes(@ApiParam(required = true) String searchStartDate, @ApiParam(required = true) String searchEndDate) throws ParseException {
+            response = QuizList.class)
+    public Result getQuizzes(@ApiParam(required = true, example = "2017-01-01") String searchStartDate, @ApiParam(required = true, example = "2017-02-01") String searchEndDate) throws ParseException {
 
         Map<String, Object> params = ImmutableMap.of("searchStartDate", searchStartDate,
-                                                     "searchEndDate", searchEndDate);
+                "searchEndDate", searchEndDate);
 
         List<Quiz> quizzes = quizService.getQuizzes(params);
 
